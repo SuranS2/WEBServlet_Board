@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<modules>
+  <module moduleId="org.eclipse.jst.jee.server:WebServlet_2" serverId="Tomcat v10.1 Server at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:WEBJSP" serverId="Tomcat v10.1 Server at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:WEBServet_2"/>
+  <module moduleId="org.eclipse.jst.jee.server:WEBServlet_3" serverId="Tomcat v10.1 Server at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:WEBServlet_Memo_Mvc_Url"/>
+  <module moduleId="org.eclipse.jst.jee.server:WEBServlet_Memo_Mvc" serverId="Tomcat v10.1 Server at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:WEBServlet_2"/>
+</modules>

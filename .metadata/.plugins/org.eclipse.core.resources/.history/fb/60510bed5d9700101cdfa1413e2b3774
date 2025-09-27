@@ -1,0 +1,45 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+    <%
+    
+    /*
+    1. 한글 처리
+    2. 데이터 받기
+    3. 로직처리(비지니스) > DB작업(CRUD)
+    
+    내장객체(WAS 톰켓)
+    1. request(클라이언트 정보를 담고 있는 객체 : 요청 페이지당 한 개 (웹서버 생성))
+    2. response(웹서버 ... 응답객체)
+    3. session(클라이언트 마다 고유하게 생성되는 고유 객체 : 접속자 100명 => 100개 객체 생성)
+    4. application (전역자원 : 모든 접속자(session) 공유하는 객체)
+    5. out ( 출력 객체 out.print ) 
+    
+    위 5개의 객체는 JSP new 없이 그냥 사용(미리 생성)
+    
+    */
+    
+    
+    request.setCharacterEncoding("UTF-8");
+    String id = request.getParameter("id");
+    /*
+    model1 방식에서 mvc 흉태
+    JSP 요청 => Model(DTO, DAO) 
+    MemberDao memberDao = new MemberDao();
+    MemberDto memberDto = new MemberDto();
+    memberDto.setId(id);
+    
+    int result = mamberDao.insertData(memberDto);    
+    */
+    
+    %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+</body>
+</html>

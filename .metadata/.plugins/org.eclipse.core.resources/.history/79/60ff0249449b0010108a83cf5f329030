@@ -1,0 +1,155 @@
+package kr.or.bit.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.bit.dto.Board;
+import kr.or.bit.dto.Reply;
+import kr.or.bit.service.BoardService;
+import kr.or.bit.service.ReplyService;
+import kr.or.bit.utils.ThePager;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.naming.NamingException;
+
+@WebServlet("*.reply")
+public class ReplyController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private ReplyService service;
+
+	public ReplyController() {
+		super();
+		this.service = ReplyService.getInBoardService();
+	}
+
+	private void doProcess(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// 1. 한글처리
+		request.setCharacterEncoding("UTF-8");
+		// 2. 데이터 받기
+		// 3. 모든 요청을 받고 처리 하겠다
+		// 3.1 요청에 대한 판단
+		// 3.1.1 command 방식 list.do?cmd=list , write.do?cmd-insert
+
+		// url 방식 (뒷 주속값을 추룰해서 비교)
+		// 마지막 주소 문자열 : localhost:8090/WEB/list.do
+		// >>>> /list.do /insert.do 추출 ....
+
+		// 데이터 받기
+		// URL 방식
+		String requestUri = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		String urlCommand = requestUri.substring(contextPath.length());
+
+		System.out.println(urlCommand);
+
+		// 3. 요청하기
+		String viewPage = "";
+
+		// 요구분석 (UI 보여주 , 데이터 처리해주)
+		//"board_reply.ok"
+		/*
+		 idx
+		 userid
+		 reply_writer
+		 reply_content
+		 reply_pwd
+		 */
+		//"boardreply_delete.ok"
+		/*
+		 no
+		 idx
+		 delPwd
+		 */
+		if (urlCommand.equals("/board_reply.reply")) {
+			//데이터 받기
+			String writer = request.getParameter("reply_writer");
+			String content = request.getParameter("reply_content");
+			String pwd = request.getParameter("reply_pwd");
+			String idx_fk = request.getParameter("idx");
+			String userid = "empty";
+			//service 객체 생성
+			int result;
+			try {
+				result = service.replyWrite(Integer.parseInt(idx_fk), writer, userid, content, pwd);
+				//처리하는 코드
+			 	String msg="";
+			    String url="";
+			    
+			    if(result > 0){
+			    	msg ="댓글 입력 성공";
+			    	url ="board_content.jsp?idx="+idx_fk;
+			    }else{
+			    	msg="댓글 입력 실패";
+			    	url="board_content.jsp?idx="+idx_fk;
+			    }
+			    
+			    request.setAttribute("board_msg",msg);
+			    request.setAttribute("board_url", url);
+				viewPage = "/WEB-INF/views/board/redirect.jsp";
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+		} else if (urlCommand.equals("/boardreply_delete.reply")) {
+			String idx_fk=request.getParameter("idx");//댓글의 원본 게시글 번호
+			String no = request.getParameter("no");//댓글의 순번(PK)
+			String pwd = request.getParameter("delPwd");//댓글의 암호
+			System.out.println(idx_fk + "/" + no + "/" + pwd + "/");
+			//parameter 정상인 경우
+			int result;
+			try {
+				result = service.replyDelete(no, pwd);
+				//처리하는 코드
+			 	String msg="";
+			    String url="";
+			    
+			    if(result > 0){
+			    	msg ="댓글 삭제 성공";
+			    	url ="board_content.jsp?idx="+idx_fk;
+			    }else{
+			    	msg="댓글 삭제 실패";
+			    	url="board_content.jsp?idx="+idx_fk;
+			    }
+			    
+			    request.setAttribute("board_msg",msg);
+			    request.setAttribute("board_url", url);
+			    viewPage = "/WEB-INF/views/board/redirect.jsp";
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} 
+		// 5. 뷰지정
+		RequestDispatcher dis = request.getRequestDispatcher(viewPage);
+
+		// 6. 뷰 forward
+		dis.forward(request, response);
+
+		// 7. 뷰페이지 화면 출력..
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doProcess(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doProcess(request, response);
+	}
+
+}

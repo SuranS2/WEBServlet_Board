@@ -1,0 +1,24 @@
+<%@page import="DTO.Dept"%>
+<%@page import="java.util.List"%>
+<%@page import="DAO.DeptDao"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+/*
+	servlet 요청 => 판단 DeptDao 실행, 그 결과를 다시 가져와서 view 역할을 하는 JSP에게 뿌리도록 전달
+*/
+	DeptDao dao = new DeptDao();
+	List<Dept> deptlist = dao.getDeptList();
+	request.setAttribute("list", deptlist);
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+</body>
+</html>

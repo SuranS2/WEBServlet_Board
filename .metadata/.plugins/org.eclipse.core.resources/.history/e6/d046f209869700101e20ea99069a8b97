@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" id="WebApp_ID" version="6.0">
+<display-name>1</display-name>
+<welcome-file-list>
+<welcome-file>index.html</welcome-file>
+</welcome-file-list>
+<context-param>
+<description>이 설명은 개발자의 마음대로</description>
+<param-name>email</param-name>
+<param-value>kosa@kosa.or.kr</param-value>
+</context-param>
+<context-param>
+<description>기본 업로드 파일 경로</description>
+<param-name>filePath</param-name>
+<param-value>C:\\Web\\upload</param-value>
+</context-param>
+<!--  
+	전역적인 예외처리
+	1. 상태코드별 처리 가능 ( 500, 404 요청 페이지 없음, 403 권한(접근)
+	2. 상세하기 (예외 객체별로 NullPoint, IndexOut, IOException) ... 실제로 사용하지 않음 => Spring에선 예외객체 사용
+-->
+<error-page>
+	<error-code>500</error-code>
+	<location>/error/Error500.jsp</location>
+</error-page>
+<error-page>
+	<error-code>404</error-code>
+	<location>/error/Error404.jsp</location>
+</error-page>
+
+</web-app>

@@ -1,0 +1,32 @@
+<%@page import="java.util.HashMap"%>
+<%@page import="DTO.Emp"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
+<%
+	Emp emp = new Emp(2000,"kosauser");
+	//사용 => 현 페이지, include forward 페이지에서 쓸거냐 req , session에서 쓸거냐
+	request.setAttribute("e",emp);
+	
+	HashMap<String, String> hp = new HashMap<>();
+	
+	//EL-JSTL은 자바 객체에 직접적으로 접근 못한다.
+	hp.put("data","1004");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h3>기존방식</h3>
+<%=emp %><br>
+<%=emp.getEmpno() %><br>
+<%=emp.getEname() %><br>
+
+
+</body>
+</html>

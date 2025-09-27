@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="hasShownOverlayPopupBefore" value="true"/>
+	<section name="java.lang.Class">
+		<item key="replaceBarOpen" value="true"/>
+		<list key="findhistory">
+			<item value="replyS"/>
+			<item value="reply"/>
+			<item value="rewri"/>
+			<item value="re"/>
+			<item value="ds"/>
+			<item value="글쓴"/>
+			<item value="작성일"/>
+			<item value="작성"/>
+			<item value="writedate"/>
+			<item value="board_write"/>
+			<item value="board"/>
+			<item value="bbs"/>
+			<item value="delete"/>
+			<item value="pwd"/>
+			<item value="write"/>
+		</list>
+		<list key="replacehistory">
+			<item value=".ok"/>
+			<item value="ps"/>
+			<item value=".empupdate"/>
+			<item value=".empUpdate"/>
+			<item value="empupdate"/>
+			<item value="empList"/>
+			<item value="EmpDao"/>
+			<item value="empDao"/>
+			<item value="/emp/"/>
+			<item value="emp_"/>
+			<item value="ConnectionPoolHelper"/>
+			<item value="emp"/>
+		</list>
+	</section>
+</section>

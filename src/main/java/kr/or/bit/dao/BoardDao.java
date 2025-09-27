@@ -37,7 +37,6 @@ public class BoardDao {
 			String sql="insert into jspboard(idx, writer, pwd, subject, content, email, homepage, writedate, readnum,filename,filesize,refer)"+ 
 					   " values(jspboard_idx.nextval,?,?,?,?,?,?,sysdate,0,?,0,?)";
 			pstmt = conn.prepareStatement(sql);
-			
 			pstmt.setString(1, boarddata.getWriter());
 			pstmt.setString(2, boarddata.getPwd());
 			pstmt.setString(3, boarddata.getSubject());
@@ -58,6 +57,8 @@ public class BoardDao {
 			row = pstmt.executeUpdate();
 			
 		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			System.out.println(conn);
 			
 		}finally {
 			try {
@@ -540,7 +541,7 @@ public class BoardDao {
 		int result = 0;
 		try {
 			conn = ds.getConnection();
-			
+			System.out.println(conn);
 			int idx = boardata.getIdx(); //현재 읽은 글의 글번호
 			
 			String writer = boardata.getWriter();

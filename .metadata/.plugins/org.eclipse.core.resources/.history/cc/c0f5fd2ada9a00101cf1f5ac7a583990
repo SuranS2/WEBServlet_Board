@@ -1,0 +1,360 @@
+package kr.or.bit.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.or.bit.dto.Board;
+import kr.or.bit.dto.Reply;
+import kr.or.bit.service.BoardService;
+import kr.or.bit.utils.ThePager;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.naming.NamingException;
+
+@WebServlet("*.ok")
+public class BoardController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private BoardService service;
+
+	public BoardController() {
+		super();
+		this.service = BoardService.getInBoardService();
+	}
+
+	private void doProcess(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// 1. 한글처리
+		request.setCharacterEncoding("UTF-8");
+		// 2. 데이터 받기
+		// 3. 모든 요청을 받고 처리 하겠다
+		// 3.1 요청에 대한 판단
+		// 3.1.1 command 방식 list.do?cmd=list , write.do?cmd-insert
+
+		// url 방식 (뒷 주속값을 추룰해서 비교)
+		// 마지막 주소 문자열 : localhost:8090/WEB/list.do
+		// >>>> /list.do /insert.do 추출 ....
+
+		// 데이터 받기
+		// URL 방식
+		String requestUri = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		String urlCommand = requestUri.substring(contextPath.length());
+
+		System.out.println(urlCommand);
+
+		// 3. 요청하기
+		String viewPage = "";
+
+		// 요구분석 (UI 보여주 , 데이터 처리해주)
+		if (urlCommand.equals("/board.ok")) {
+			// 화면 ...
+			// 게시물 총 건수
+			int totalboardcount;
+			try {
+				totalboardcount = service.totalBoardCount();
+				// 상세보기 >> 다시 LIST 넘어올때 >> 현재 페이지 설정
+				String ps = request.getParameter("ps");
+				// pagesize
+				String cp = request.getParameter("cp"); // current page
+
+				// List 페이지 처음 호출 ...
+				if (ps == null || ps.trim().equals("")) { // default 값 설정
+					ps = "5"; // 5개씩
+				}
+
+				if (cp == null || cp.trim().equals("")) { // default 값 설정
+					cp = "1";
+					// 1번째 페이지보겠다
+				}
+
+				int pagesize = Integer.parseInt(ps);
+				int cpage = Integer.parseInt(cp);
+				int pagecount = 0;
+
+				// 23건 % 5
+				if (totalboardcount % pagesize == 0) {
+					pagecount = totalboardcount / pagesize;
+					// 20 << 100/5
+				} else {
+					pagecount = (totalboardcount / pagesize) + 1;
+				}
+				// 102건 : pagesize=5 >> pagecount=21페이지
+
+				// 전체 목록 가져오기
+
+//							list >> 1 , 20
+				List<Board> boardList = service.list(cpage, pagesize);
+				// 페이지사이즈
+				request.setAttribute("ps", ps);
+				// cpage
+				request.setAttribute("cp", cp);
+				request.setAttribute("boardList", boardList);
+				request.setAttribute("totalboardcount", totalboardcount);
+
+				int pagersize = 3; // [1][2][3]
+				ThePager pager = new ThePager(totalboardcount, cpage, pagesize, pagersize, "board_list.do");
+				request.setAttribute("pager", pager);
+				viewPage = "/WEB-INF/views/board/board_list.jsp";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if (urlCommand.equals("/board_list.ok")) {
+			viewPage = "board.ok";
+		} else if (urlCommand.equals("/board_content.ok")) {
+			String idx = request.getParameter("idx"); // 글번호 받기
+
+			// 글 번호를 가지고 오지 않았을 경우 예외처리
+			if (idx == null || idx.trim().equals("")) {
+				response.sendRedirect("board.ok");
+				return; // 더 이상 아래 코드가 실행되지 않고 클라이언트에게 바로 코드 전달
+			}
+			idx = idx.trim();
+			// http://192.168.0.12:8090/WebServlet_5_Board_Model1_Sample/board/board_content.jsp?idx=19&cp=1&ps=5
+			// board_content.jsp?idx=19&cp=1&ps=5 //다시 목록으로 갔을때 ... cp , ps 가지고 ...
+			// why: 목록으로 이동시 현재 page 유지하고 싶어요
+			String cpage = request.getParameter("cp"); // current page
+			String pagesize = request.getParameter("ps"); // pagesize
+
+			// List 페이지 처음 호출 ...
+			if (cpage == null || cpage.trim().equals("")) {
+				// default 값 설정
+				cpage = "1";
+			}
+
+			if (pagesize == null || pagesize.trim().equals("")) {
+				// default 값 설정
+				pagesize = "5";
+			}
+			// 옵션
+			// 조회수 증가
+			boolean isread;
+			try {
+				isread = service.addReadNum(idx);
+				if (isread)
+					System.out.println("조회증가 : " + isread);
+				Board board = service.content(Integer.parseInt(idx));
+				String content = board.getContent();
+				if (content != null) {
+					content = content.replace("\n", "<br>");
+				}
+				// 데이터 조회 (1건 (row))
+				request.setAttribute("idx", idx);
+				request.setAttribute("cp", cpage);
+				request.setAttribute("ps", pagesize);
+				request.setAttribute("board", board);
+				request.setAttribute("content", content);
+
+				// 덧글 목록 보여주기
+				List<Reply> replyList = service.replyList(idx); // 참조하는 글번호
+				if (replyList != null && replyList.size() > 0) {
+					request.setAttribute("replyList", replyList);
+				}
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			viewPage = "/WEB-INF/views/board/board_content.jsp";
+		} else if (urlCommand.equals("/board_write.ok")) {
+			viewPage = "/WEB-INF/views/board/board_write.jsp";
+		} else if (urlCommand.equals("/board_create.ok")) {
+			Board board = Board.builder().subject(request.getParameter("subject"))
+					.writer(request.getParameter("writer")).email(request.getParameter("email"))
+					.homepage(request.getParameter("homepage")).content(request.getParameter("content"))
+					.pwd(request.getParameter("pwd")).filename(request.getParameter("filename")).build();
+			System.out.println(board);
+			int result;
+			try {
+				result = service.writeOk(board);
+				// write.jsp 화면 >> writeok.jsp 처리 >> service >> dao > DB 작업 >
+				// return dao > return service > writeok.jsp 결과처리 >> 이동 (공통) >> redirect.jsp
+
+				String msg = "";
+				String url = "";
+				if (result > 0) {
+					msg = "insert success";
+					url = "board_list.ok";
+				} else {
+					msg = "insert fail";
+					url = "board_write.ok";
+				}
+
+				request.setAttribute("board_msg", msg);
+				request.setAttribute("board_url", url);
+				viewPage = "/WEB-INF/views/board/redirect.jsp";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if (urlCommand.equals("/board_edit.ok")) {
+			// 수정하기
+			String idx = request.getParameter("idx");
+			if (idx == null || idx.trim().equals("")) {
+				response.sendRedirect("board_list.ok"); // cpage=1 , ps=5
+				return;
+			}
+			Board board;
+			//내용표시
+			try {
+				board = service.board_EditContent(idx);
+				request.setAttribute("idx", idx);
+				request.setAttribute("board", board);
+				viewPage = "/WEB-INF/views/board/board_edit.jsp";
+			} catch (NamingException e) {
+				e.printStackTrace();
+			}
+		} else if (urlCommand.equals("/board_update.ok")) {
+			// 1. board_edit.jsp > 입력값 받기 > board dto 객체에 담기
+
+			// 방법 1) request.getParameter("subject") > new Board > setter > request > return
+			// Board
+			// 가장 일반적인 방법
+
+			// 방법 2) usebean 액션태그 (property )통해서 setter 주입
+
+			// 방법 3) request 객체를 통으로 넘기는 방법 (이 방법) >> 실습코드 ...
+
+			String idx = request.getParameter("idx");
+
+			int result;
+			try {
+				result = service.board_Edit(request);
+				String msg = "";
+				String url = "";
+				if (result > 0) {
+					msg = "edit success";
+					url = "board_list.ok";
+				} else {
+					msg = "edit fail";
+					url = "board_edit.ok?idx=" + idx;
+				}
+
+				request.setAttribute("board_msg", msg);
+				request.setAttribute("board_url", url);
+				viewPage = "/WEB-INF/views/board/redirect.jsp";
+			} catch (NamingException e) {
+				
+				e.printStackTrace();
+			}
+
+		} else if (urlCommand.equals("/board_delete.ok")) {
+			//<a href="board_delete.ok?idx=${idx}&cp=${cp}&ps=${ps}">삭제</a> 
+
+			try {
+				String idx = request.getParameter("idx");
+				String pwd = request.getParameter("pwd");
+				service.board_Delete(idx, pwd);
+				request.setAttribute("idx", idx);
+				request.setAttribute("cp", request.getParameter("cp"));
+				request.setAttribute("ps", request.getParameter("ps"));
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			viewPage = "/WEB-INF/views/board/board_delete.jsp";
+
+		}else if (urlCommand.equals("/board_remove.ok")) {
+			try {
+				String idx = request.getParameter("idx");
+				String pwd = request.getParameter("pwd");
+				
+				int result =service.board_Delete(idx, pwd);
+				
+				String msg="";
+				String url="";
+				if(result > 0){
+					msg="delete success";
+					url="board_list.ok";
+				}else{
+					msg="delete fail";
+					url="board_list.ok";
+				}
+				request.setAttribute("board_msg",msg);
+				request.setAttribute("board_url",url);
+				viewPage = "/WEB-INF/views/board/redirect.jsp";
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else if (urlCommand.equals("/board_rewrite.ok")) {
+			String idx = request.getParameter("idx");
+			String cpage = request.getParameter("cp");
+			String pagesize = request.getParameter("ps");
+			String subject = request.getParameter("subject"); // 답글의 제목으로 사용
+			
+			if(idx == null || subject == null || idx.trim().equals("") || subject.trim().equals("")){
+				response.sendRedirect("board_list.ok");
+				return;
+			}
+			if(cpage == null || pagesize == null){
+				cpage ="1";
+				pagesize = "5";
+			}
+			request.setAttribute("idx", idx);
+			request.setAttribute("cp", cpage);
+			request.setAttribute("ps", pagesize);
+			request.setAttribute("subject", subject);
+			
+			viewPage = "/WEB-INF/views/board/board_rewrite.jsp";
+		}else if (urlCommand.equals("/board_recreate.ok")) {
+			try {
+				Board board = Board.builder().subject(request.getParameter("subject"))
+						.writer(request.getParameter("writer")).email(request.getParameter("email"))
+						.homepage(request.getParameter("homepage")).content(request.getParameter("content"))
+						.pwd(request.getParameter("pwd")).filename(request.getParameter("filename")).build();
+				
+				System.out.println(board);
+				int result = service.rewriteok(board);
+				
+				//list 이동시 현재 pagesize , cpage
+				String cpage = request.getParameter("cp"); //current page
+				String pagesize = request.getParameter("ps"); //pagesize
+				//코드는 필요에 따라서  url ="board_list.jsp?cp=<%=cpage";
+				String msg="";
+			    String url="";
+			    if(result > 0){
+			    	msg ="rewrite insert success";
+			    	url ="board_list.ok";
+			    }else{
+			    	msg="rewrite insert fail";
+			    	url="board_content.ok?idx="+request.getParameter("idx");
+			    }
+			    
+			    request.setAttribute("cp", cpage);
+				request.setAttribute("ps", pagesize);
+			    request.setAttribute("board_msg",msg);
+			    request.setAttribute("board_url", url);
+				viewPage = "/WEB-INF/views/board/redirect.jsp";
+			}catch(Exception e){
+				e.getStackTrace();
+			}
+			
+		}
+		
+		// 5. 뷰지정
+		RequestDispatcher dis = request.getRequestDispatcher(viewPage);
+
+		// 6. 뷰 forward
+		dis.forward(request, response);
+
+		// 7. 뷰페이지 화면 출력..
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doProcess(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doProcess(request, response);
+	}
+
+}

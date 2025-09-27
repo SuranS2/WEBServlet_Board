@@ -1,0 +1,13 @@
+1758871794585	Move 'board_list.jsp' to 'board'
+1758875656020	Move 'board_content.jsp' to 'board'
+1758879209166	Move 'board_write.jsp' to 'board'
+1758880397689	Move 'board_writeok.jsp' to 'board'
+1758881002077	Move 'redirect.jsp' to 'board'
+1758885903450	Move 2 resources to 'board'
+1758889509145	Move 2 resources to 'board'
+1758890319025	Move 2 resources to 'board'
+1758931301014	Copy compilation unit
+1758931322680	Rename type 'BoardController2'
+1758932250483	Copy compilation unit
+1758932267532	Rename type 'BoardDao2'
+1758935302878	Move 2 resources to 'reply'

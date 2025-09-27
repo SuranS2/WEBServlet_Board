@@ -63,6 +63,6 @@ INCREMENT BY 1
 NOCACHE;
 
 
-SELECT * FROM board  ORDER BY idx DESC ;
-SELECT * FROM mutiboard ORDER BY refer DESC , step ASC
+SELECT * FROM jspboard  ORDER BY idx DESC ;
+SELECT * FROM jspboard ORDER BY refer DESC , step ASC
 

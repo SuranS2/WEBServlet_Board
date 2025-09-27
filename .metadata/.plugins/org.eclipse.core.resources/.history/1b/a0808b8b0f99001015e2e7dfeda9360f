@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="WEBServlet_Emp_Mvc">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <property name="context-root" value="WEBServlet_Emp_Mvc"/>
+        <property name="java-output-path" value="/WEBServlet_Emp_Mvc/build/classes"/>
+    </wb-module>
+</project-modules>

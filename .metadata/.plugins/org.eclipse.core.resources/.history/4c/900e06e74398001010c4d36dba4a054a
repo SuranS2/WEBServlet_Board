@@ -1,0 +1,49 @@
+package com;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
+
+@WebServlet("/SimpleController")
+public class SimpleController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    public SimpleController() {
+        super();
+        System.out.println("SimpleController의 생성자 메서드 실행 : 초기화");
+    }
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("클라이언드의 요청이 GET 자동실행 함수");
+		//1. 한글처리
+		request.setCharacterEncoding("UTF-8");
+		//2. 데이터 받기
+		String type = request.getParameter("type");
+		//3. 비즈니스 로직(요구사항)
+		Object resultObj = null;
+		if(type == null || type.equals("greeting")) {
+			resultObj = "hello world";
+		}else if(type.equals("date")) {
+			resultObj = new Date();
+		}else {
+			resultObj = "invalid String type";
+		}
+		//4. 데이터 담기 (request : 현재 페이지.include.forward , session : 전체 페이지, application : 전체페이지)
+		//UI JSP에게 전달
+		request.setAttribute("result", resultObj);
+		//request xx번지
+		
+		//5. view 정의
+		//WEB-INF => views => board => css, image, simpleview.jsp
+		//					> admin => css, js, image, .jsp
+		request.getRequestDispatcher("/");
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("클라이언드의 요청이 GET 자동실행 함수");
+	}
+}

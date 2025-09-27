@@ -1,0 +1,16 @@
+<%@page import="kr.or.kosa.Emp"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<%
+	Emp emp = (Emp)session.getAttribute("empobj"); // 제네릭이 적용 안되기 때문에 Obj => 다운캐스팅 필요
+%>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+127.0.0.1 - - [27/Sep/2025:10:49:22 +0900] "GET / HTTP/1.1" 404 752
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:49:24 +0900] "GET /WEBServlet_Board/index.jsp HTTP/1.1" 200 1414
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:49:24 +0900] "GET /favicon.ico HTTP/1.1" 404 804
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:49:30 +0900] "GET /WEBServlet_Board/board.ok HTTP/1.1" 200 5715
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:49:30 +0900] "GET /images/re.gif HTTP/1.1" 404 810
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:49:33 +0900] "GET /WEBServlet_Board/board_content.ok?idx=9&cp=1&ps=5 HTTP/1.1" 200 4548
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:49:37 +0900] "POST /WEBServlet_Board/board_reply.reply HTTP/1.1" 200 407
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:49:38 +0900] "GET /WEBServlet_Board/board_content.jsp?idx=9 HTTP/1.1" 404 789
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:50:11 +0900] "POST /WEBServlet_Board/board_reply.reply HTTP/1.1" 200 406
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:50:14 +0900] "GET /WEBServlet_Board/board_content.ok?idx=9 HTTP/1.1" 200 5620
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:50:18 +0900] "POST /WEBServlet_Board/boardreply_delete.reply HTTP/1.1" 200 407
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:50:19 +0900] "GET /WEBServlet_Board/board_content.jsp?idx=9 HTTP/1.1" 404 789
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:50:46 +0900] "GET /WEBServlet_Board/board_content.ok?idx=9 HTTP/1.1" 200 5084
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:50:48 +0900] "POST /WEBServlet_Board/boardreply_delete.reply HTTP/1.1" 200 406
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:10:50:49 +0900] "GET /WEBServlet_Board/board_content.ok?idx=9 HTTP/1.1" 200 4548
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:11:07:14 +0900] "GET /WEBServlet_Board/board.ok HTTP/1.1" 200 5715
+0:0:0:0:0:0:0:1 - - [27/Sep/2025:11:07:14 +0900] "GET /images/re.gif HTTP/1.1" 404 810

@@ -1,0 +1,269 @@
+package kr.or.kosa.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import kr.or.kosa.dto.EmpDto;
+import kr.or.kosa.utils.ConnectionPoolHelper;
+import kr.or.kosa.utils.DBType;
+
+/*
+DB연결
+CRUD 함수 생성 > emp
+1. 전체조회  : select id , email , content from emp
+2. 조건조회  : select id , email , content from emp where id=? //제약 id >pk
+3. 삽입     : insert into emp(id,email,content) values(?,?,?)
+4. 수정     : update emp set email=? , content=? where id=?
+5. 삭제     : delete from emp where id=?
+알파... LIKE 검색  where email like '%naver%'
+
+자바로 함수를 생성 .... 처리 ... 거의 똑같아요
+ArrayList
+HashMap
+제너릭 ...
+*/
+
+
+public class EmpDao {
+	/*
+전체조회 
+	*/
+	//1. 전체조회 
+	//1.1 List 담아서 처리 generic
+	
+	public List<EmpDto> getEmpDtoAllList(){
+		
+		List<EmpDto> empDtoList = new ArrayList<EmpDto>();
+		//EmpDtoList.add(new EmpDto());
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			  conn = ConnectionPoolHelper.getConnection();
+			  String sql="select * from emp";
+			  pstmt = conn.prepareStatement(sql);
+			  
+			  rs = pstmt.executeQuery();
+			  
+
+			  while(rs.next()) {
+				  //한건의 데이터  DTO 객체 하나 POINT
+				  EmpDto empDto = EmpDto.builder()
+						  .empno(rs.getInt("empno"))
+						  .ename(rs.getString("ename"))
+						  .job(rs.getString("job"))
+						  .mgr(rs.getInt("mgr"))
+						  .hiredate(rs.getObject("hiredate", LocalDate.class))
+						  .sal(rs.getInt("sal"))
+						  .comm(rs.getInt("comm"))
+						  .deptno(rs.getInt("deptno"))
+						  .build();
+				  //List 추가
+				  empDtoList.add(empDto); //데이터 4건 (4개의 객체가 추가)
+			  }
+			  
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			ConnectionPoolHelper.close(rs);
+			ConnectionPoolHelper.close(pstmt);
+			ConnectionPoolHelper.close(conn);
+		}
+		
+		
+		return empDtoList;
+	}
+	
+	//Like 검색  >> 이름 검색  >> 부서번호 , 부서이름도 같이 출력
+	public EmpDto getEmpDtoByEname(String ename) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		EmpDto empDto = null; //데이터 한건
+		
+		try {
+			   conn = ConnectionPoolHelper.getConnection();
+			   //프리페어 스테이트먼트는 싱글쿼테이션 처리가 필요없다.
+			   String sql = "select * from emp where ename like ?";
+			   
+			   pstmt = conn.prepareStatement(sql);
+			   
+			   // ename에 % 처리
+			   pstmt.setString(1, "%"+ename+"%");
+			   rs = pstmt.executeQuery();
+			   
+			  while(rs.next()) {
+				  //한건의 데이터  DTO 객체 하나 POINT
+				  empDto = EmpDto.builder()
+						  .empno(rs.getInt("empno"))
+						  .ename(rs.getString("ename"))
+						  .job(rs.getString("job"))
+						  .mgr(rs.getInt("mgr"))
+						  .hiredate(rs.getObject("hiredate", LocalDate.class))
+						  .sal(rs.getInt("sal"))
+						  .comm(rs.getInt("comm"))
+						  .deptno(rs.getInt("deptno"))
+						  .build();
+			  }
+			   
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			ConnectionPoolHelper.close(rs);
+			ConnectionPoolHelper.close(pstmt);
+			ConnectionPoolHelper.close(conn);
+		}
+		
+		return empDto;
+	}
+	
+	//2. select empno,ename,job,hiredate,sal from emp  where empno=?
+	public EmpDto getEmpDtoListByEmpno(int empno) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		EmpDto empDto = null; //데이터 한건
+		
+		try {
+			   conn = ConnectionPoolHelper.getConnection();
+			   String sql = "select * from emp where empno=?";
+			   
+			   pstmt = conn.prepareStatement(sql);
+			   pstmt.setInt(1, empno);
+			   rs = pstmt.executeQuery();
+			   
+			  while(rs.next()) {
+				  //한건의 데이터  DTO 객체 하나 POINT
+				  empDto = EmpDto.builder()
+						  .empno(rs.getInt("empno"))
+						  .ename(rs.getString("ename"))
+						  .job(rs.getString("job"))
+						  .mgr(rs.getInt("mgr"))
+						  .hiredate(rs.getObject("hiredate", LocalDate.class))
+						  .sal(rs.getInt("sal"))
+						  .comm(rs.getInt("comm"))
+						  .deptno(rs.getInt("deptno"))
+						  .build();
+			  }
+			   
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			ConnectionPoolHelper.close(rs);
+			ConnectionPoolHelper.close(pstmt);
+			ConnectionPoolHelper.close(conn);
+		}
+		
+		return empDto;
+	}
+	//삽입 insert into emp( ....) values(?,?,?,?,?,?,?,?)
+	//insert into EmpDto(EmpDtono,dname,loc) values(?,?,?)
+	public int insertEmpDto(EmpDto empDto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int rowcount = 0;
+		
+		try {
+			    conn = ConnectionPoolHelper.getConnection();
+			    String sql="insert into emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) values(?,?,?,?,?,?,?,?)";
+			    
+/*
+ 	EmpDto empDto = EmpDto.builder()
+    							.empno(Integer.parseInt(empno))
+    							.ename(ename)
+    							.job(job)
+    							.mgr(Integer.parseInt(mgr))
+    							//TODO hiredate 변환 필요.
+    							.hiredate(LocalDate.parse(hiredate))
+    							.sal(Integer.parseInt(sal))
+    							.comm(Integer.parseInt(comm))
+    							.deptno(Integer.parseInt(deptno))
+    							.build();
+ */
+			    pstmt = conn.prepareStatement(sql);
+			    
+			    pstmt.setInt(1, empDto.getEmpno());
+			    pstmt.setString(2, empDto.getEname());
+			    pstmt.setString(3, empDto.getJob());
+			    pstmt.setInt(4, empDto.getMgr());
+//			    pstmt.setDate(5, (java.sql.Date) empDto.getHiredate());
+			    pstmt.setObject(5, LocalDate.of(empDto.getHiredate().getYear(), empDto.getHiredate().getMonth(), empDto.getHiredate().getDayOfMonth()));
+			    pstmt.setInt(6, empDto.getSal());
+			    pstmt.setInt(7, empDto.getComm());
+			    pstmt.setInt(8, empDto.getDeptno());
+			    
+			    rowcount = pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			ConnectionPoolHelper.close(pstmt);
+			ConnectionPoolHelper.close(conn);
+		}
+		return rowcount;
+	}
+	
+	//	
+	//수정 update emp set ename=? , job=? , sal=? , hiredate=? where empno=?
+	public int updateEmpDto(EmpDto empDto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int rowcount = 0;
+		
+		try {
+			    conn = ConnectionPoolHelper.getConnection();
+			    String sql="update emp set ename=? , job=? , sal=? , hiredate=? where empno=?";
+			    
+			    pstmt = conn.prepareStatement(sql);
+			    
+			    pstmt.setString(1, empDto.getEname());
+			    pstmt.setString(2, empDto.getJob());
+			    // pstmt.setObject(....)
+			    // 혹은 select to_char(hiredate, 'YYYY-MM-DD') 포매팅 구성이 가능하나
+			    // 프론트 가공(UI)이 필요 없을 때 편리
+			    pstmt.setObject(4, LocalDate.of(empDto.getHiredate().getYear(), empDto.getHiredate().getMonth(), empDto.getHiredate().getDayOfMonth()));
+			    pstmt.setInt(4, empDto.getSal());
+			    pstmt.setInt(5, empDto.getEmpno());
+			    
+			    rowcount = pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			ConnectionPoolHelper.close(pstmt);
+			ConnectionPoolHelper.close(conn);
+		}
+		return rowcount;
+	}
+
+	//	삭제 delete from emp where empno=?
+	public int deleteEmpDto(int empno) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int rowcount = 0;
+		
+		try {
+			    conn = ConnectionPoolHelper.getConnection();
+			    String sql="delete from emp where empno=?";
+			    
+			    pstmt = conn.prepareStatement(sql);
+
+			    pstmt.setInt(1, empno);
+			  
+			    rowcount = pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			ConnectionPoolHelper.close(pstmt);
+			ConnectionPoolHelper.close(conn);
+		}
+		return rowcount;
+	}
+}

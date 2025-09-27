@@ -1,0 +1,71 @@
+package com.board;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.http.HttpRequest;
+
+
+// XML URL 매칭이랑 똑같음
+@WebServlet(description = "게시판Front 역할을 하는 Servlet입니다.", urlPatterns = { "/Board" })
+public class FrontBoardController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    public FrontBoardController() {
+        super();
+    }
+    private void doProcess(HttpServletRequest request, HttpServletResponse response,String method ) throws ServletException, IOException {
+    	//doGet, doPost 논리가 동일하다면 ... doProcess
+    	//1. 한글처리 => 이후 filter로 없어지는 부분
+    	request.setCharacterEncoding("UTF-8");
+    	
+    	//2. 데이터 받기
+    	//2.1 데이터 받는 방식 2가지 : command 방식 => 요구사항 , url 방식(선호)
+    	//data.do?cmd=write
+    	//list.do => list.do 주소를 추출해서 의미를 부여
+    	String cmd = request.getParameter("cmd");
+    	
+    	String viewPage = null;
+    	//cmd > null => error.jsp
+    	//cmd > boardlist => list.jsp
+    	//cmd > boardwrite => write.jsp 규칙 정의(개발자)
+    	
+    	//3.비즈니스 로직 수행(요구사항) : 암호화, 관리자 페이지, DB 연결(CRUD)
+    	if(cmd == null) {
+    		viewPage = "/error/error.jsp";
+    	}else if(cmd.equals("boradlist")) {
+    		/*
+    		 Model 만들어져 있다면
+    		 DTO Board
+    		 DAO BoardDao => CRUD 함수
+    		 
+    		 BoardDao boardDao = new BoardDao();
+    		 List<Board> list = boardDao.getAllBoardList();
+    		 
+    		 forward => view jsp : request.setAttribute("list");
+    		 */
+    		
+    		viewPage = "board/boardlist.jsp";
+    	}else if(cmd.equals("boardwrite")) {
+    		viewPage = "board/boardwrite.jsp";
+    	}else if(cmd.equals("boarddelete")) {
+//    		viewPage = "board/boarddelete.jsp";
+    	}else if(cmd.equals("login")) {
+    		viewPage = "/WEB-INF/views/login/login.jsp"; // Controller 서버 내부에선 접근 가능
+    	}else {
+    		viewPage = "/error/error.jsp";
+    	}
+    	
+	}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doProcess(request, response,"GET");
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doProcess(request, response,"POST");
+	}
+
+}

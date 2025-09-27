@@ -1,0 +1,36 @@
+<%@page import="java.util.Date"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+    
+<%
+	Date date =new Date();
+	String name = "hello world";
+
+%>
+<%!
+	//이 페이지에서 사용하는 공통함수
+	// page scope
+	public int add(int i, int j){
+		return i+j;
+	}
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h3>JSP 실행하기</h3>
+	날짜:<%= date%><hr>
+	이름:<%= name%><hr>
+	함수:<%= add(100,200) %><ht>
+	<%
+		int result = add(1,2);
+	%>
+	<br>
+	결과 : <%= result %>
+</body>
+</html>

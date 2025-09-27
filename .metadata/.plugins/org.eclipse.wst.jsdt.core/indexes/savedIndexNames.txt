@@ -1,0 +1,16 @@
+INDEX VERSION 1.4+C:\dev\msa_edu\web\WebBackEnd\BackEndLabs\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+916928846.index
+3142950079.index
+1427606799.index
+2548191714.index
+4086364505.index
+496932981.index
+1033197351.index
+1847325012.index
+1391250442.index
+1315730440.index
+1434355154.index
+1788455139.index
+519409818.index
+2457550857.index
+1519041163.index

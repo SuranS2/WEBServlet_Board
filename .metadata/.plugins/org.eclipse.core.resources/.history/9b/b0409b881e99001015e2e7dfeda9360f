@@ -1,0 +1,69 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<jsp:include page="/header.jsp"/>
+	<div style="margin: 100px;">
+		<form action="${pageContext.request.contextPath}/empupdateok.do?ename=${requestScope.empUpdate.ename}"
+			method="post">
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">사원번호</label> 
+				<input
+					value="${requestScope.empUpdate.empno}" readonly
+					type="text" class="form-control" name="id" placeholder="id입력"
+					required="required">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">이름</label>
+				<input value="${requestScope.empUpdate.ename}" type="text" class="form-control" name="content"
+					placeholder="content 입력" required="required">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">직무</label>
+				<input value="${requestScope.empUpdate.job}" type="text" class="form-control" name="email"
+					placeholder="email입력" required="required">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">매니저번호</label>
+				<input value="${requestScope.empUpdate.mgr}" type="text" class="form-control" name="content"
+					placeholder="content 입력" required="required">
+			</div>
+				<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">입사일</label>
+				<input value="${requestScope.empUpdate.hiredate}" type="date" class="form-control" name="content"
+					placeholder="content 입력" required="required">
+			</div>
+				<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">급여</label>
+				<input value="${requestScope.empUpdate.sal}" type="text" class="form-control" name="content"
+					placeholder="content 입력" required="required">
+			</div>
+			</div>
+				<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">커미션</label>
+				<input value="${requestScope.empUpdate.comm}" type="text" class="form-control" name="content"
+					placeholder="content 입력" required="required">
+			</div>
+			</div>
+				<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">부서번호</label>
+				<input value="${requestScope.empUpdate.deptno}" type="text" class="form-control" name="content"
+					placeholder="content 입력" required="required">
+			</div>
+			<div class="col-12">
+				<button type="submit" class="btn btn-primary">수정하기</button>
+			</div>
+			<div class="col-12">
+				<button onclick="location.href = 'emplist.do'" type="button"
+					class="btn btn-light">취소</button>
+			</div>
+		</form>
+	</div>
+
+</body>
+</html>

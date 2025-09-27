@@ -1,0 +1,38 @@
+package com.board;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.http.HttpRequest;
+
+
+// XML URL 매칭이랑 똑같음
+@WebServlet(description = "게시판Front 역할을 하는 Servlet입니다.", urlPatterns = { "/Board" })
+public class FrontBoardController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    public FrontBoardController() {
+        super();
+    }
+    private void doProcess(HttpServletRequest request, HttpServletResponse response,HttpRequest method ) throws ServletException, IOException {
+    	//doGet, doPost 논리가 동일하다면 ... doProcess
+    	//1. 한글처리 => 이후 filter로 없어지는 부분
+    	request.setCharacterEncoding("UTF-8");
+    	
+    	//2. 데이터 받기
+    	//2.1 데이터 받는 방식 2가지 : command 방식 => 요구사항 , url 방식(선호)
+    	//data.do?cmd=write
+    	//list.do => list.do 주소를 추출해서 의미를 부여
+	}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doProcess(request, response,"GET");
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doProcess(request, response,"POST");
+	}
+
+}

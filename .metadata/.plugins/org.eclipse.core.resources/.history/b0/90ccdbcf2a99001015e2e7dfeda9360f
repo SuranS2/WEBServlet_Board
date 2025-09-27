@@ -1,0 +1,35 @@
+package kr.or.kosa.dto;
+
+import java.time.LocalDate;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/*
+EMPNO    NOT NULL NUMBER       
+ENAME             VARCHAR2(10) 
+JOB               VARCHAR2(9)  
+MGR               NUMBER       
+HIREDATE          DATE         
+SAL               NUMBER       
+COMM              NUMBER       
+DEPTNO            NUMBER  
+
+권장사항 : @Builder ^^
+*/
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class EmpDto {
+	private int empno;
+	private String ename;
+	private String job;
+	private int mgr;
+	private LocalDate hiredate;
+	private int sal;
+	private int comm;
+	private int deptno;
+}

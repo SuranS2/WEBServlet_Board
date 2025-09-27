@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<form action="Ex02_register.jsp">
+	<input type = "text" id="userid" name = "userid"></input>
+	<input type = "password" id="password" name = "pwd"></input>
+	<input></input>
+	<input></input>
+	<input></input>
+	<input></input>
+	<button></button>
+</form>
+</body>
+</html>
