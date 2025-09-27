@@ -17,14 +17,11 @@ import javax.sql.DataSource;
 
 import kr.or.bit.dto.Board;
 import kr.or.bit.dto.Reply;
+import kr.or.bit.utils.ConnectionPoolHelper;
 
 //CRUD 함수 > ConnectionPool > 함수단위 연결 ,받환 
 public class BoardDao {
-	DataSource ds = null;
-	
-	public BoardDao() throws NamingException {
-		Context context = new InitialContext();
-		ds = (DataSource)context.lookup("java:comp/env/jdbc/oracle");
+	public BoardDao(){
 	}
 	
 	//글쓰기(원본글) *
@@ -33,7 +30,7 @@ public class BoardDao {
 		PreparedStatement pstmt = null;
 		int row = 0;
 		try {
-			conn = ds.getConnection();
+			conn = ConnectionPoolHelper.getConnection();
 			String sql="insert into jspboard(idx, writer, pwd, subject, content, email, homepage, writedate, readnum,filename,filesize,refer)"+ 
 					   " values(jspboard_idx.nextval,?,?,?,?,?,?,sysdate,0,?,0,?)";
 			pstmt = conn.prepareStatement(sql);
@@ -62,8 +59,8 @@ public class BoardDao {
 			
 		}finally {
 			try {
-				pstmt.close();
-				conn.close();//반환하기
+				ConnectionPoolHelper.close(pstmt);
+				ConnectionPoolHelper.close(conn);//반환하기
 			} catch (Exception e2) {
 			
 			}
@@ -80,7 +77,7 @@ public class BoardDao {
 		ResultSet rs = null;
 		int refer_max=0;
 		try {
-			conn = ds.getConnection(); //빌려주세여^^  이따 반납할게요 
+			conn = ConnectionPoolHelper.getConnection(); //빌려주세여^^  이따 반납할게요 
 			String sql="select nvl(max(refer),0) from jspboard";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
@@ -91,9 +88,9 @@ public class BoardDao {
 			System.out.println(e.getMessage());
 		}finally {
 			try {
-				pstmt.close();
-				rs.close();
-				conn.close(); // 반납이요 ^^
+				ConnectionPoolHelper.close(pstmt);
+				ConnectionPoolHelper.close(rs);
+				ConnectionPoolHelper.close(conn); // 반납이요 ^^
 			}catch (Exception e) {
 				
 			}
@@ -161,7 +158,7 @@ public class BoardDao {
 		ResultSet rs = null;
 		List<Board> list = null;
 		try {
-			conn = ds.getConnection();
+			conn = ConnectionPoolHelper.getConnection();
 			String sql = "select * from " +
 			                           "(select rownum rn,idx,writer,email,homepage,pwd,subject , content, writedate, readnum " +
 				                       ",filename,filesize,refer,depth,step " +
@@ -198,9 +195,9 @@ public class BoardDao {
 			System.out.println("오류 :" + e.getMessage());
 		}finally {
 			try {
-				pstmt.close();
-				rs.close();
-				conn.close();//반환
+				ConnectionPoolHelper.close(pstmt);
+				ConnectionPoolHelper.close(rs);
+				ConnectionPoolHelper.close(conn);//반환
 			} catch (Exception e2) {
 				
 			}
@@ -216,7 +213,7 @@ public class BoardDao {
 			ResultSet rs = null;
 			int totalcount = 0;
 			try {
-				conn = ds.getConnection(); //dbcp 연결객체 얻기
+				conn = ConnectionPoolHelper.getConnection(); //dbcp 연결객체 얻기
 				String sql="select count(*) cnt from jspboard";
 				pstmt = conn.prepareStatement(sql);
 				rs = pstmt.executeQuery();
@@ -227,9 +224,9 @@ public class BoardDao {
 				
 			}finally {
 				try {
-					pstmt.close();
-					rs.close();
-					conn.close();//반환  connection pool 에 반환하기
+					ConnectionPoolHelper.close(pstmt);
+					ConnectionPoolHelper.close(rs);
+					ConnectionPoolHelper.close(conn);//반환  connection pool 에 반환하기
 				}catch (Exception e) {
 					
 				}
@@ -245,7 +242,7 @@ public class BoardDao {
 		Board board= null;
 		
 		try {
-			conn = ds.getConnection();
+			conn = ConnectionPoolHelper.getConnection();
 			String sql="select * from jspboard where idx=?"; //* 하지 말자
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, idx);
@@ -276,9 +273,9 @@ public class BoardDao {
 			System.out.println("content: " + e.getMessage());
 		}finally {
 			try {
-				pstmt.close();
-				rs.close();
-				conn.close();//반환하기
+				ConnectionPoolHelper.close(pstmt);
+				ConnectionPoolHelper.close(rs);
+				ConnectionPoolHelper.close(conn);//반환하기
 			} catch (Exception e2) {
 				
 			}
@@ -294,7 +291,7 @@ public class BoardDao {
 			PreparedStatement pstmt = null;
 			boolean result = false;
 			try {
-				conn = ds.getConnection();
+				conn = ConnectionPoolHelper.getConnection();
 				String sql="update jspboard set readnum = readnum + 1 where idx=?";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, idx);
@@ -308,8 +305,8 @@ public class BoardDao {
 				e.printStackTrace();
 			}finally {
 				try {
-					pstmt.close();
-					conn.close();//반환
+					ConnectionPoolHelper.close(pstmt);
+					ConnectionPoolHelper.close(conn);//반환
 				}catch (Exception e) {
 					
 				}
@@ -337,7 +334,7 @@ public class BoardDao {
 		ResultSet rs = null;
 		int row = 0;
 		try {
-				conn = ds.getConnection();
+				conn = ConnectionPoolHelper.getConnection();
 				//비인증 ..
 				//삭제 > 비번 
 				//처리 > 글번호 ,비번
@@ -397,9 +394,9 @@ public class BoardDao {
 			}
 		}finally {
 			try {
-				pstmt.close();
-				rs.close();
-				conn.close();//반환
+				ConnectionPoolHelper.close(pstmt);
+				ConnectionPoolHelper.close(rs);
+				ConnectionPoolHelper.close(conn);//반환
 			} catch (Exception e2) {
 				
 			}
@@ -413,7 +410,7 @@ public class BoardDao {
 			PreparedStatement pstmt = null;
 			int row = 0;
 			try {
-				conn = ds.getConnection();
+				conn = ConnectionPoolHelper.getConnection();
 				String sql="insert into reply(no,writer,userid,content,pwd,idx_fk) "+
 				           " values(reply_no.nextval,?,?,?,?,?)";
 				pstmt =conn.prepareStatement(sql);
@@ -428,8 +425,8 @@ public class BoardDao {
 				e.printStackTrace();
 			}finally {
 				try {
-					pstmt.close();
-					conn.close();//반환
+					ConnectionPoolHelper.close(pstmt);
+					ConnectionPoolHelper.close(conn);//반환
 				}catch (Exception e) {
 					
 				}
@@ -446,7 +443,7 @@ public class BoardDao {
 			ArrayList<Reply> list = null;
 			
 			try {
-				conn = ds.getConnection();
+				conn = ConnectionPoolHelper.getConnection();
 				String reply_sql = "select * from reply where idx_fk=? order by no desc";
 				
 				pstmt = conn.prepareStatement(reply_sql);
@@ -473,9 +470,9 @@ public class BoardDao {
 				e.printStackTrace();
 			}finally {
 				try {
-					pstmt.close();
-					rs.close();
-					conn.close();//반환
+					ConnectionPoolHelper.close(pstmt);
+					ConnectionPoolHelper.close(rs);
+					ConnectionPoolHelper.close(conn);//반환
 				}catch (Exception e) {
 					
 				}
@@ -496,14 +493,14 @@ public class BoardDao {
 				String replyselect = "select pwd from reply where no=?";
 				String replydelete = "delete from reply where no=?";
 				
-				conn = ds.getConnection();
+				conn = ConnectionPoolHelper.getConnection();
 				pstmt = conn.prepareStatement(replyselect);
 				pstmt.setString(1, no);
 				rs =pstmt.executeQuery();
 				if(rs.next()) {
 					String dbpwd = rs.getString("pwd");
 					if(pwd.equals(dbpwd)){
-						pstmt.close();
+						ConnectionPoolHelper.close(pstmt);
 						pstmt = conn.prepareStatement(replydelete);
 						pstmt.setString(1, no);
 						row = pstmt.executeUpdate();
@@ -517,9 +514,9 @@ public class BoardDao {
 				
 			}finally {
 				try {
-					pstmt.close();
-					rs.close();
-					conn.close();//반환
+					ConnectionPoolHelper.close(pstmt);
+					ConnectionPoolHelper.close(rs);
+					ConnectionPoolHelper.close(conn);//반환
 				}catch (Exception e) {
 					
 				}
@@ -540,7 +537,7 @@ public class BoardDao {
 		ResultSet rs = null;
 		int result = 0;
 		try {
-			conn = ds.getConnection();
+			conn = ConnectionPoolHelper.getConnection();
 			System.out.println(conn);
 			int idx = boardata.getIdx(); //현재 읽은 글의 글번호
 			
@@ -615,9 +612,9 @@ public class BoardDao {
 			e.printStackTrace();
 		}finally {
 			try {
-				pstmt.close();
-				rs.close();
-				conn.close();//반환
+				ConnectionPoolHelper.close(pstmt);
+				ConnectionPoolHelper.close(rs);
+				ConnectionPoolHelper.close(conn);//반환
 			}catch (Exception e) {
 				
 			}
@@ -650,7 +647,7 @@ public class BoardDao {
 		int row = 0;
 		
 		try {
-			conn = ds.getConnection();
+			conn = ConnectionPoolHelper.getConnection();
 			String sql_idx = "select idx  from jspboard where idx=? and pwd=?";
 			String sql_udpate = "update jspboard set writer=? , email=? , homepage=? ,"+
 			                    " subject=? , content=? , filename=? where idx=?";
@@ -662,7 +659,7 @@ public class BoardDao {
 			//판단 (데이터 있다며 : 수정가능 , 없다면 : 수정불가
 			if(rs.next()) {
 				//경고
-				pstmt.close();
+				ConnectionPoolHelper.close(pstmt);
 				//업데이트
 				pstmt = conn.prepareStatement(sql_udpate);
 				pstmt.setString(1, writer);
@@ -679,9 +676,9 @@ public class BoardDao {
 			System.out.println(e.getMessage());
 		}finally {
 			try {
-				pstmt.close();
-				rs.close();
-				conn.close();//반환
+				ConnectionPoolHelper.close(pstmt);
+				ConnectionPoolHelper.close(rs);
+				ConnectionPoolHelper.close(conn);//반환
 			} catch (Exception e2) {
 				
 			}

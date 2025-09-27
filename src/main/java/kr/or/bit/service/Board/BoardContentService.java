@@ -74,7 +74,7 @@ public class BoardContentService implements Action {
 			forward = new ActionForward();
 			forward.setRedirect(false);
 			forward.setPath("/WEB-INF/views/board/board_content.jsp");
-		} catch (NamingException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

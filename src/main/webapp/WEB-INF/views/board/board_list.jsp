@@ -68,7 +68,7 @@
 								&nbsp;&nbsp;&nbsp;
 							</c:forEach>
 							<c:if test="${board.depth > 0}">
-								<img src="../images/re.gif">
+								<img src="./images/re.gif">
 							</c:if>
 							<a href="board_content.ok?idx=${board.idx}&cp=${cp}&ps=${ps}">
 								<c:choose>

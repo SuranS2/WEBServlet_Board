@@ -17,23 +17,17 @@ import javax.sql.DataSource;
 
 import kr.or.bit.dto.Board;
 import kr.or.bit.dto.Reply;
+import kr.or.bit.utils.ConnectionPoolHelper;
 
 //CRUD 함수 > ConnectionPool > 함수단위 연결 ,받환 
 public class ReplyDao {
-	DataSource ds = null;
-
-	public ReplyDao() throws NamingException {
-		Context context = new InitialContext();
-		ds = (DataSource) context.lookup("java:comp/env/jdbc/oracle");
-	}
-
 	// 댓글 입력하기 (Table reply : fk(jspboard idx) )
 	public int replywrite(int idx_fk, String writer, String userid, String content, String pwd) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		int row = 0;
 		try {
-			conn = ds.getConnection();
+			conn = ConnectionPoolHelper.getConnection();
 			String sql = "insert into reply(no,writer,userid,content,pwd,idx_fk) "
 					+ " values(reply_no.nextval,?,?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
@@ -49,7 +43,7 @@ public class ReplyDao {
 		} finally {
 			try {
 				pstmt.close();
-				conn.close();// 반환
+				ConnectionPoolHelper.close(conn);// 반환
 			} catch (Exception e) {
 
 			}
@@ -66,7 +60,7 @@ public class ReplyDao {
 		ArrayList<Reply> list = null;
 
 		try {
-			conn = ds.getConnection();
+			conn = ConnectionPoolHelper.getConnection();
 			String reply_sql = "select * from reply where idx_fk=? order by no desc";
 
 			pstmt = conn.prepareStatement(reply_sql);
@@ -93,8 +87,8 @@ public class ReplyDao {
 		} finally {
 			try {
 				pstmt.close();
-				rs.close();
-				conn.close();// 반환
+				ConnectionPoolHelper.close(rs);
+				ConnectionPoolHelper.close(conn);// 반환
 			} catch (Exception e) {
 
 			}
@@ -115,7 +109,7 @@ public class ReplyDao {
 			String replyselect = "select pwd from reply where no=?";
 			String replydelete = "delete from reply where no=?";
 
-			conn = ds.getConnection();
+			conn = ConnectionPoolHelper.getConnection();
 			pstmt = conn.prepareStatement(replyselect);
 			pstmt.setString(1, no);
 			rs = pstmt.executeQuery();
@@ -137,8 +131,8 @@ public class ReplyDao {
 		} finally {
 			try {
 				pstmt.close();
-				rs.close();
-				conn.close();// 반환
+				ConnectionPoolHelper.close(rs);
+				ConnectionPoolHelper.close(conn);// 반환
 			} catch (Exception e) {
 
 			}
